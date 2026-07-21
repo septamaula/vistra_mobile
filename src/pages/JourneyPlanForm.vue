@@ -73,10 +73,12 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
-import axios from 'axios'
+// import axios from 'axios'
 
 const router = useRouter()
 const $q = useQuasar()
+
+/* --- KODE API ASLI DIKOMEN ---
 const api = axios.create({ baseURL: 'http://sales.test/api/mobile' })
 
 api.interceptors.request.use((config) => {
@@ -86,6 +88,7 @@ api.interceptors.request.use((config) => {
   }
   return config
 })
+--- */
 
 // Format today YYYY-MM-DD
 const today = new Date().toISOString().split('T')[0]
@@ -102,6 +105,20 @@ const submitting = ref(false)
 
 const loadOutlets = async () => {
   loadingOutlets.value = true
+  
+  // -- MOCK OUTLETS --
+  setTimeout(() => {
+    outlets.value = [
+      { OUTLET_ID: 1, NAMA_OUTLET: 'Apotek Sehat Jaya' },
+      { OUTLET_ID: 2, NAMA_OUTLET: 'RS Medika Utama' },
+      { OUTLET_ID: 3, NAMA_OUTLET: 'Klinik Bhakti Husada' },
+      { OUTLET_ID: 4, NAMA_OUTLET: 'Depot Sumber Rezeki (Mock)' }
+    ]
+    filteredOutlets.value = outlets.value
+    loadingOutlets.value = false
+  }, 800)
+
+  /* --- API ASLI DIKOMEN ---
   try {
     const response = await api.get('/outlets')
     if (response.data.success) {
@@ -114,6 +131,7 @@ const loadOutlets = async () => {
   } finally {
     loadingOutlets.value = false
   }
+  --- */
 }
 
 const filterFn = (val, update) => {
@@ -134,6 +152,19 @@ const filterFn = (val, update) => {
 
 const onSubmit = async () => {
   submitting.value = true
+  
+  // -- MOCK SUBMIT --
+  setTimeout(() => {
+    submitting.value = false
+    $q.notify({
+      type: 'positive',
+      message: 'Journey plan berhasil diajukan (Mock)',
+      position: 'top'
+    })
+    router.push('/dashboard')
+  }, 1000)
+
+  /* --- API ASLI DIKOMEN ---
   try {
     const response = await api.post('/journey-plans', form.value)
     if (response.data.success) {
@@ -154,6 +185,7 @@ const onSubmit = async () => {
   } finally {
     submitting.value = false
   }
+  --- */
 }
 
 onMounted(() => {

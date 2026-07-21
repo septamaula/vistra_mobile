@@ -5,9 +5,15 @@ const routes = [
     children: [
       { path: '', redirect: '/login' },
       { path: 'dashboard', component: () => import('@/pages/IndexPage.vue') },
-      { path: 'journey-plan/add', component: () => import('@/pages/JourneyPlanForm.vue') },
+      { path: 'journey-plan', component: () => import('@/pages/JourneyPlanList.vue') },
       { path: 'journey-plan/:id', component: () => import('@/pages/JourneyPlanDetail.vue') },
       { path: 'visit/:visit_id', component: () => import('@/pages/VisitExecution.vue') },
+      { path: 'products', component: () => import('@/pages/ProductCatalogPage.vue') },
+      { path: 'outlets', component: () => import('@/pages/OutletListPage.vue') },
+      { path: 'reports', component: () => import('@/pages/SalesReportPage.vue') },
+      { path: 'report', component: () => import('@/pages/SalesReportPage.vue') },
+      { path: 'sync', component: () => import('@/pages/OfflineSyncPage.vue') },
+      { path: 'profile', component: () => import('@/pages/UserProfilePage.vue') },
       { path: 'second', component: () => import('@/pages/SecondPage.vue') }
     ],
   },

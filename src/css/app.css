@@ -1,1 +1,165 @@
-/* app global css */
+/* ========================================
+   VISTRA — Global Design System
+   ======================================== */
+
+/* --- CSS Variables --- */
+:root {
+  /* Primary Palette */
+  --vistra-primary: #1976D2;
+  --vistra-primary-dark: #1565C0;
+  --vistra-primary-light: #42A5F5;
+  --vistra-primary-bg: rgba(25, 118, 210, 0.08);
+
+  /* Accent */
+  --vistra-accent: #00BCD4;
+  --vistra-accent-light: #4DD0E1;
+
+  /* Semantic */
+  --vistra-success: #43A047;
+  --vistra-success-bg: rgba(67, 160, 71, 0.1);
+  --vistra-warning: #FB8C00;
+  --vistra-warning-bg: rgba(251, 140, 0, 0.1);
+  --vistra-danger: #E53935;
+  --vistra-danger-bg: rgba(229, 57, 53, 0.1);
+  --vistra-info: #5C6BC0;
+  --vistra-info-bg: rgba(92, 107, 192, 0.1);
+
+  /* Neutral */
+  --vistra-bg: #F5F7FA;
+  --vistra-surface: #FFFFFF;
+  --vistra-text-primary: #1A2138;
+  --vistra-text-secondary: #6B7280;
+  --vistra-text-hint: #9CA3AF;
+  --vistra-border: #E5E7EB;
+
+  /* Radius */
+  --vistra-radius-sm: 10px;
+  --vistra-radius-md: 16px;
+  --vistra-radius-lg: 24px;
+  --vistra-radius-xl: 32px;
+
+  /* Shadow */
+  --vistra-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --vistra-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
+  --vistra-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+/* --- Base --- */
+body {
+  font-family: 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--vistra-text-primary);
+  background-color: var(--vistra-bg);
+}
+
+/* --- Utility: Card --- */
+.v-card {
+  background: var(--vistra-surface);
+  border-radius: var(--vistra-radius-md);
+  box-shadow: var(--vistra-shadow-sm);
+  border: 1px solid var(--vistra-border);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.v-card:active {
+  transform: scale(0.98);
+}
+
+/* --- Utility: Icon Circle --- */
+.v-icon-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.v-icon-circle--sm {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+}
+
+.v-icon-circle--lg {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+}
+
+/* --- Utility: Section Title --- */
+.v-section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--vistra-text-primary);
+  letter-spacing: -0.3px;
+}
+
+.v-section-subtitle {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--vistra-text-secondary);
+}
+
+/* --- Utility: Gradient backgrounds --- */
+.v-gradient-primary {
+  background: linear-gradient(135deg, var(--vistra-primary) 0%, var(--vistra-primary-dark) 100%);
+}
+
+.v-gradient-accent {
+  background: linear-gradient(135deg, var(--vistra-accent) 0%, var(--vistra-accent-light) 100%);
+}
+
+/* --- Utility: Badge / Chip --- */
+.v-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.v-badge--success {
+  background: var(--vistra-success-bg);
+  color: var(--vistra-success);
+}
+
+.v-badge--warning {
+  background: var(--vistra-warning-bg);
+  color: var(--vistra-warning);
+}
+
+.v-badge--danger {
+  background: var(--vistra-danger-bg);
+  color: var(--vistra-danger);
+}
+
+.v-badge--info {
+  background: var(--vistra-info-bg);
+  color: var(--vistra-info);
+}
+
+/* --- Animation: Fade in up --- */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.v-animate-in {
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+.v-animate-in--delay-1 { animation-delay: 0.05s; }
+.v-animate-in--delay-2 { animation-delay: 0.1s; }
+.v-animate-in--delay-3 { animation-delay: 0.15s; }
+.v-animate-in--delay-4 { animation-delay: 0.2s; }

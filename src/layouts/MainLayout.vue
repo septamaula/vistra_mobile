@@ -1,22 +1,23 @@
 <template>
-  <q-layout view="lHh Lpr lFf" class="bg-grey-1">
-    <!-- Seamless Header -->
-    <q-header class="bg-transparent text-dark q-pt-md q-px-md">
+  <q-layout view="lHh Lpr lFf" class="main-layout">
+    <!-- Solid Header -->
+    <q-header class="bg-white text-dark q-py-xs q-px-sm" style="border-bottom: 1px solid rgba(0,0,0,0.05);">
       <q-toolbar class="q-pa-none">
-        <!-- Four dots menu icon -->
+        <!-- Menu icon -->
         <q-btn flat round dense @click="toggleLeftDrawer" class="text-dark">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="4" y="4" width="6" height="6" rx="2" fill="currentColor"/>
-            <rect x="14" y="4" width="6" height="6" rx="2" fill="currentColor"/>
-            <rect x="4" y="14" width="6" height="6" rx="2" fill="currentColor"/>
-            <rect x="14" y="14" width="6" height="6" rx="2" fill="currentColor"/>
-          </svg>
+          <q-icon name="menu_open" size="24px" />
         </q-btn>
-        
+
         <q-space />
 
+        <!-- Notification Bell -->
+        <q-btn flat round dense class="text-dark q-mr-xs">
+          <q-icon name="notifications_none" size="24px" />
+          <q-badge color="red" floating rounded style="top: 6px; right: 4px; font-size: 9px;">3</q-badge>
+        </q-btn>
+
         <!-- User Avatar -->
-        <q-avatar size="38px" class="shadow-1 cursor-pointer" @click="logout">
+        <q-avatar size="36px" class="cursor-pointer shadow-1" @click="logout">
           <img :src="userAvatar" />
         </q-avatar>
       </q-toolbar>
@@ -25,62 +26,116 @@
     <!-- Side Drawer -->
     <q-drawer
       v-model="leftDrawerOpen"
-      show-if-above
       bordered
       class="bg-white"
-      :width="250"
+      :width="260"
+      :breakpoint="1024"
     >
-      <q-list class="q-pt-lg">
-        <q-item-label header class="text-weight-bold text-h6 q-mb-md">
-          SFA Qiara
-        </q-item-label>
+      <div class="drawer-header q-pa-lg">
+        <div class="drawer-logo">
+          <div class="v-icon-circle v-gradient-primary" style="width: 40px; height: 40px;">
+            <q-icon name="trending_up" color="white" size="22px" />
+          </div>
+          <span class="drawer-brand">Vistra</span>
+        </div>
+        <div class="drawer-subtitle">Sales Force Automation</div>
+      </div>
 
-        <q-item clickable v-ripple to="/dashboard" exact active-class="text-primary bg-blue-1">
+      <q-separator />
+
+      <q-list class="q-pt-md q-px-sm">
+        <q-item
+          v-for="item in menuItems"
+          :key="item.label"
+          clickable
+          v-ripple
+          :to="item.to"
+          exact
+          active-class="drawer-active"
+          class="drawer-item"
+        >
           <q-item-section avatar>
-            <q-icon name="dashboard" />
+            <q-icon :name="item.icon" size="22px" />
           </q-item-section>
-          <q-item-section class="text-weight-medium">Dashboard</q-item-section>
-        </q-item>
-        
-        <q-item clickable v-ripple @click="logout" class="text-negative">
-          <q-item-section avatar>
-            <q-icon name="logout" color="negative" />
+          <q-item-section class="text-weight-medium" style="font-size: 14px;">
+            {{ item.label }}
           </q-item-section>
-          <q-item-section class="text-weight-medium">Logout</q-item-section>
         </q-item>
       </q-list>
+
+      <q-space />
+
+      <div class="q-pa-md">
+        <q-btn
+          flat
+          no-caps
+          class="full-width text-left text-negative drawer-item"
+          icon="logout"
+          label="Keluar"
+          @click="logout"
+        />
+      </div>
     </q-drawer>
 
     <!-- Page Content -->
     <q-page-container>
       <router-view />
     </q-page-container>
-    
+
+    <!-- Bottom Navigation Bar -->
+    <q-footer class="bg-white bottom-nav" bordered>
+      <div class="bottom-nav__inner">
+        <div
+          v-for="nav in bottomNavItems"
+          :key="nav.label"
+          class="bottom-nav__item"
+          :class="{ 'bottom-nav__item--active': currentRoute === nav.to }"
+          @click="navigateTo(nav.to)"
+        >
+          <q-icon :name="currentRoute === nav.to ? nav.iconActive : nav.icon" size="24px" />
+          <span>{{ nav.label }}</span>
+        </div>
+      </div>
+    </q-footer>
+
   </q-layout>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
+const route = useRoute()
 const leftDrawerOpen = ref(false)
 
 const userAvatar = ref('https://cdn.quasar.dev/img/avatar.png')
 
-onMounted(() => {
-  const user = localStorage.getItem('sales_user')
-  if (user) {
-    const parsed = JSON.parse(user)
-    if (parsed.FOTO) {
-      // Setup URL to point to backend avatar
-      userAvatar.value = `http://sales.test/uploads/karyawan/${parsed.FOTO}`
-    }
-  }
-})
+const currentRoute = computed(() => route.path)
 
-function toggleLeftDrawer () {
+const menuItems = [
+  { icon: 'dashboard', label: 'Beranda', to: '/dashboard' },
+  { icon: 'map', label: 'Rencana Kunjungan', to: '/journey-plan' },
+  { icon: 'inventory_2', label: 'Katalog Produk', to: '/products' },
+  { icon: 'storefront', label: 'Daftar Outlet', to: '/outlets' },
+  { icon: 'assessment', label: 'Laporan Sales & Retur', to: '/reports' },
+  { icon: 'sync', label: 'Sinkronisasi Offline', to: '/sync' },
+  { icon: 'person', label: 'Profil Saya', to: '/profile' },
+]
+
+const bottomNavItems = [
+  { icon: 'home', iconActive: 'home', label: 'Beranda', to: '/dashboard' },
+  { icon: 'map', iconActive: 'map', label: 'Rencana', to: '/journey-plan' },
+  { icon: 'assessment', iconActive: 'assessment', label: 'Laporan', to: '/reports' },
+  { icon: 'person', iconActive: 'person', label: 'Profil', to: '/profile' },
+]
+
+function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value
+}
+
+function navigateTo(to) {
+  router.push(to)
 }
 
 function logout() {
@@ -90,8 +145,92 @@ function logout() {
 }
 </script>
 
+<style lang="scss" scoped>
+.main-layout {
+  background: var(--vistra-bg);
+}
+
+/* Drawer */
+.drawer-header {
+  padding-bottom: 16px;
+}
+
+.drawer-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.drawer-brand {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--vistra-text-primary);
+  letter-spacing: -0.5px;
+}
+
+.drawer-subtitle {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--vistra-text-hint);
+  margin-top: 6px;
+}
+
+.drawer-item {
+  border-radius: 12px;
+  margin-bottom: 4px;
+  min-height: 44px;
+}
+
+.drawer-active {
+  background: var(--vistra-primary-bg) !important;
+  color: var(--vistra-primary) !important;
+
+  .q-icon {
+    color: var(--vistra-primary) !important;
+  }
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+  box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.06) !important;
+  padding: 0;
+  background: var(--vistra-surface) !important;
+}
+
+.bottom-nav__inner {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 8px 0 6px;
+}
+
+.bottom-nav__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  padding: 4px 12px;
+  color: var(--vistra-text-hint);
+  transition: color 0.2s ease;
+
+  span {
+    font-size: 10px;
+    font-weight: 600;
+  }
+}
+
+.bottom-nav__item--active {
+  color: var(--vistra-primary);
+}
+
+.bottom-nav__item:active {
+  transform: scale(0.92);
+}
+</style>
+
 <style lang="scss">
-/* Make header completely seamless by removing shadows from q-header */
+/* Global: Make header seamless */
 .q-header {
   box-shadow: none !important;
 }
