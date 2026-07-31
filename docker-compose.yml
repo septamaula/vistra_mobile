@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  sales-mobile:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sales-mobile-app
+    ports:
+      - "9000:9000"
+    volumes:
+      # Sync file lokal dengan file di dalam container untuk hot-reload
+      - .:/app
+      # Hindari menimpa node_modules di dalam container dengan versi Windows
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true # Penting untuk hot-reloading di Windows/WSL/Docker
+      - NODE_ENV=development

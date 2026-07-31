@@ -4,11 +4,11 @@
 
 /* --- CSS Variables --- */
 :root {
-  /* Primary Palette */
-  --vistra-primary: #1976D2;
-  --vistra-primary-dark: #1565C0;
-  --vistra-primary-light: #42A5F5;
-  --vistra-primary-bg: rgba(25, 118, 210, 0.08);
+  /* Primary Palette (Vistra Red Maroon Theme) */
+  --vistra-primary: #701a1e;
+  --vistra-primary-dark: #581316;
+  --vistra-primary-light: #c0152a;
+  --vistra-primary-bg: rgba(112, 26, 30, 0.08);
 
   /* Accent */
   --vistra-accent: #00BCD4;

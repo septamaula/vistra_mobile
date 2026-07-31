@@ -119,7 +119,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-import { useQuasar } from 'quasar'
+import { useQuasar, Dialog } from 'quasar'
 import AppHeader from '@/components/AppHeader.vue'
 
 const router = useRouter()
@@ -130,17 +130,26 @@ const changePassword = () => {
 }
 
 const logout = () => {
-  $q.dialog({
-    title: 'Konfirmasi Keluar',
-    message: 'Apakah Anda yakin ingin keluar dari akun Vistra Mobile?',
-    cancel: true,
-    persistent: true,
-    ok: { label: 'Ya, Keluar', color: 'negative' }
-  }).onOk(() => {
-    localStorage.removeItem('sales_token')
-    $q.notify({ type: 'positive', message: 'Anda telah berhasil keluar dari sistem.' })
-    router.push('/login')
-  })
+  const dialogFn = Dialog?.create || $q?.dialog
+  if (typeof dialogFn === 'function') {
+    dialogFn({
+      title: 'Konfirmasi Keluar',
+      message: 'Apakah Anda yakin ingin keluar dari akun Vistra Mobile?',
+      cancel: true,
+      persistent: true,
+      ok: { label: 'Ya, Keluar', color: 'negative' }
+    }).onOk(() => {
+      localStorage.removeItem('sales_token')
+      $q.notify({ type: 'positive', message: 'Anda telah berhasil keluar dari sistem.' })
+      router.push('/login')
+    })
+  } else {
+    if (window.confirm('Apakah Anda yakin ingin keluar dari akun Vistra Mobile?')) {
+      localStorage.removeItem('sales_token')
+      $q.notify({ type: 'positive', message: 'Anda telah berhasil keluar dari sistem.' })
+      router.push('/login')
+    }
+  }
 }
 </script>
 

@@ -1,0 +1,8 @@
+node_modules
+.git
+.vscode
+dist
+.quasar
+npm-debug.log
+yarn-error.log
+.DS_Store

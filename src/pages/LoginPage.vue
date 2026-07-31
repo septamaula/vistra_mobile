@@ -1,40 +1,40 @@
 <template>
   <q-page class="login-page">
-    <!-- Image Background -->
-    <div class="hero-section">
-      <q-img
-        src="/images/login-hero.png"
-        class="hero-image"
-        fit="cover"
-        position="center"
-      />
-      <div class="hero-overlay"></div>
-    </div>
 
-    <div class="header-space"></div>
+    <!-- Animated Background Blobs -->
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <div class="bg-blob blob-3"></div>
 
-    <!-- Bottom Glassmorphism Form Sheet -->
-    <div class="glass-sheet">
-      <div class="q-px-lg q-pt-lg q-pb-sm text-center">
-        <div class="logo-wrapper q-mx-auto q-mb-md flex flex-center shadow-4">
-          <q-icon name="trending_up" size="2.5rem" color="primary" />
+    <!-- Main Content -->
+    <div class="login-container">
+
+      <!-- Logo Section -->
+      <div class="logo-section">
+        <div class="logo-wrapper">
+          <img src="/images/logo.png" alt="Vistra Logo" class="logo-img" />
         </div>
-        <h4 class="text-h4 text-weight-bolder text-white q-mt-none q-mb-xs">Vistra</h4>
-        <div class="text-subtitle1 text-white text-opacity-80">Selamat datang, silakan masuk</div>
       </div>
-      
-      <div class="q-px-lg q-pb-lg">
-        <q-form @submit="onSubmit" class="q-gutter-y-md">
-          
+
+      <!-- Greeting Text -->
+      <div class="greeting-section">
+        <h1 class="greeting-title">Selamat datang kembali!</h1>
+        <p class="greeting-subtitle">Silakan masuk untuk melanjutkan</p>
+      </div>
+
+      <!-- Form Section -->
+      <div class="form-section">
+        <q-form @submit="onSubmit" class="login-form" greedy>
+
           <!-- Email Input -->
-          <div>
+          <div class="input-wrapper">
             <q-input
               v-model="form.email"
               placeholder="Alamat Email"
               type="email"
               borderless
               dark
-              class="glass-input q-mb-xs"
+              class="custom-input"
               lazy-rules
               :rules="[
                 val => !!val || 'Email wajib diisi',
@@ -43,57 +43,65 @@
               hide-bottom-space
             >
               <template v-slot:prepend>
-                <q-icon name="mail_outline" color="white" class="q-pl-md" />
+                <q-icon name="mail_outline" class="input-icon" />
               </template>
             </q-input>
           </div>
 
           <!-- Password Input -->
-          <div>
+          <div class="input-wrapper">
             <q-input
               v-model="form.password"
               placeholder="Kata Sandi"
               :type="showPassword ? 'text' : 'password'"
               borderless
               dark
-              class="glass-input"
+              class="custom-input"
               lazy-rules
               :rules="[val => !!val || 'Kata sandi wajib diisi']"
               hide-bottom-space
             >
               <template v-slot:prepend>
-                <q-icon name="lock_outline" color="white" class="q-pl-md" />
+                <q-icon name="lock_outline" class="input-icon" />
               </template>
               <template v-slot:append>
                 <q-icon
                   :name="showPassword ? 'visibility' : 'visibility_off'"
-                  class="cursor-pointer q-pr-md"
-                  color="white"
+                  class="cursor-pointer input-icon-right"
                   @click="showPassword = !showPassword"
                 />
               </template>
             </q-input>
-            
-            <div class="text-right q-mt-md">
-              <a href="#" class="text-white text-caption text-weight-medium text-decoration-none hover-underline">Lupa kata sandi?</a>
-            </div>
+          </div>
+
+          <!-- Forgot Password -->
+          <div class="forgot-row">
+            <a href="#" class="forgot-link">Lupa kata sandi?</a>
           </div>
 
           <!-- Submit Button -->
-          <div class="q-mt-lg">
+          <div class="btn-wrapper">
             <q-btn
               label="MASUK"
               type="submit"
-              class="full-width text-weight-bolder custom-glass-btn"
-              rounded
-              size="1.2rem"
-              :loading="loading"
+              class="full-width masuk-btn"
               unelevated
+              no-caps
+              :loading="loading"
             />
           </div>
-          
+
         </q-form>
       </div>
+
+      <!-- Footer -->
+      <div class="footer-section">
+        <p class="footer-text">
+          Belum punya akun?
+          <a href="#" class="footer-link">Hubungi administrator</a>
+        </p>
+      </div>
+
     </div>
   </q-page>
 </template>
@@ -102,78 +110,38 @@
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
-// import axios from 'axios'
+import { api } from '../boot/axios'
 
 const router = useRouter()
 const $q = useQuasar()
 
-// Gunakan sales.test sesuai standar Laragon
-// const api = axios.create({ baseURL: 'http://sales.test/api/mobile' })
-
-const form = reactive({
-  email: '',
-  password: ''
-})
+const form = reactive({ email: '', password: '' })
 const loading = ref(false)
 const showPassword = ref(false)
 
 const onSubmit = async () => {
   loading.value = true
-  
-  // -- MOCK LOGIN --
-  // Simulasi loading 1.5 detik tanpa memanggil API
-  setTimeout(() => {
-    loading.value = false
-    
-    // Ekstrak nama dari email (sebelum @)
-    const emailName = form.email.split('@')[0]
-    const formattedName = emailName.charAt(0).toUpperCase() + emailName.slice(1)
-
-    // Simpan data dummy ke localStorage
-    localStorage.setItem('sales_token', 'mock_token_12345')
-    localStorage.setItem('sales_user', JSON.stringify({
-      id: 1,
-      name: formattedName || 'Sales Vistra',
-      email: form.email
-    }))
-    
-    $q.notify({
-      type: 'positive',
-      message: 'Berhasil Masuk',
-      position: 'top',
-      timeout: 2000
-    })
-    
-    router.push('/dashboard')
-  }, 1500)
-
-  /* --- KODE API ASLI DIKOMEN DULU ---
   try {
-    const response = await api.post('/login', form)
-    
-    // Simpan token ke localStorage
-    localStorage.setItem('sales_token', response.data.token)
-    localStorage.setItem('sales_user', JSON.stringify(response.data.user))
-    
-    loading.value = false
-    $q.notify({
-      type: 'positive',
-      message: 'Login Successful',
-      position: 'top',
-      timeout: 2000
+    const res = await api.post('/login', {
+      email: form.email,
+      password: form.password
     })
-    router.push('/dashboard')
-    
+
+    if (res.data.success) {
+      localStorage.setItem('sales_token', res.data.token)
+      localStorage.setItem('sales_user', JSON.stringify(res.data.user))
+
+      $q.notify({ type: 'positive', message: 'Berhasil Masuk', position: 'top', timeout: 2000 })
+      router.push('/dashboard')
+    } else {
+      $q.notify({ type: 'negative', message: res.data.message || 'Login gagal', position: 'top' })
+    }
   } catch (e) {
-    console.error(e)
+    const msg = e.response?.data?.message || 'Email atau password salah'
+    $q.notify({ type: 'negative', message: msg, position: 'top' })
+  } finally {
     loading.value = false
-    $q.notify({
-      type: 'negative',
-      message: e.response?.data?.message || 'Invalid email or password',
-      position: 'top'
-    })
   }
-  --- */
 }
 </script>
 
@@ -181,124 +149,262 @@ const onSubmit = async () => {
 .login-page {
   display: flex;
   flex-direction: column;
-  position: relative;
+  align-items: center;
+  justify-content: center;
   min-height: 100vh;
+  background: #0e0a0a;
   overflow: hidden;
-  background-color: #0d1117;
+  position: relative;
 }
 
-.header-space {
-  height: 30vh;
-  min-height: 180px;
+/* Animated background blobs */
+.bg-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+  pointer-events: none;
+  animation: blobFloat 8s ease-in-out infinite;
+}
+
+.blob-1 {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, #c0152a, #7a0010);
+  top: -80px;
+  right: -80px;
+  animation-delay: 0s;
+}
+
+.blob-2 {
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, #8b0000, #400005);
+  bottom: 80px;
+  left: -60px;
+  animation-delay: -3s;
+}
+
+.blob-3 {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, #c0152a, #6a000e);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation-delay: -6s;
+}
+
+@keyframes blobFloat {
+  0%, 100% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-20px) scale(1.05); }
+}
+
+/* Main container */
+.login-container {
   position: relative;
   z-index: 10;
-}
-
-.hero-section {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 55vh;
-  z-index: 0;
-}
-
-.hero-image {
-  height: 100%;
-  width: 100%;
-  opacity: 0.6;
-}
-
-.hero-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to bottom, rgba(13,17,23,0) 0%, rgba(13,17,23,1) 100%);
-}
-
-/* Glassmorphism Sheet */
-.glass-sheet {
-  flex: 1;
-  position: relative;
-  z-index: 10;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-  border-top-left-radius: 40px;
-  border-top-right-radius: 40px;
-  box-shadow: 0 -10px 45px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  padding: 32px 28px;
   display: flex;
   flex-direction: column;
+  align-items: center;
+}
+
+/* Logo */
+.logo-section {
+  margin-bottom: 28px;
+  display: flex;
+  justify-content: center;
 }
 
 .logo-wrapper {
-  width: 80px;
-  height: 80px;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 50%;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 0 32px rgba(192, 21, 42, 0.6));
+  animation: logoPulse 3s ease-in-out infinite;
 }
 
-.text-opacity-80 {
-  opacity: 0.8;
+@keyframes logoPulse {
+  0%, 100% { filter: drop-shadow(0 0 24px rgba(192, 21, 42, 0.5)); }
+  50% { filter: drop-shadow(0 0 40px rgba(192, 21, 42, 0.8)); }
 }
 
-/* Glassmorphism Inputs */
-:deep(.glass-input .q-field__control) {
-  background: rgba(255, 255, 255, 0.07) !important;
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-  height: 56px;
+.logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
-:deep(.glass-input .q-field__control:hover),
-:deep(.glass-input .q-field__control.q-field__control--focused) {
-  background: rgba(255, 255, 255, 0.15) !important;
-  border-color: rgba(255, 255, 255, 0.5);
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+/* Greeting */
+.greeting-section {
+  text-align: center;
+  margin-bottom: 32px;
 }
 
-/* Glassmorphism Button */
-.custom-glass-btn {
-  background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
-  color: var(--q-primary) !important;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(5px);
-  box-shadow: 0 8px 32px rgba(255, 255, 255, 0.15);
-  transition: all 0.3s ease;
-  letter-spacing: 1px;
+.greeting-title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.3px;
+  line-height: 1.3;
 }
 
-.custom-glass-btn:active {
-  transform: scale(0.95);
-  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+.greeting-subtitle {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.55);
+  margin: 0;
+  font-weight: 400;
 }
 
-a.text-decoration-none {
-  text-decoration: none;
-}
-a.hover-underline:hover {
-  text-decoration: underline;
+/* Form */
+.form-section {
+  width: 100%;
 }
 
-/* Fix input autofill background in webkit */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.input-wrapper {
+  margin-bottom: 14px;
+}
+
+/* Custom Input Styles */
+:deep(.custom-input .q-field__control) {
+  background: rgba(30, 10, 10, 0.6) !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  height: 52px;
+  transition: all 0.25s ease;
+}
+
+:deep(.custom-input .q-field__control:hover) {
+  background: rgba(40, 15, 15, 0.7) !important;
+  border-color: rgba(192, 21, 42, 0.4) !important;
+}
+
+:deep(.custom-input.q-field--focused .q-field__control) {
+  background: rgba(40, 15, 15, 0.75) !important;
+  border-color: rgba(192, 21, 42, 0.7) !important;
+  box-shadow: 0 0 0 3px rgba(192, 21, 42, 0.12);
+}
+
+:deep(.custom-input .q-field__native) {
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-size: 0.92rem;
+}
+
+:deep(.custom-input .q-field__native::placeholder) {
+  color: rgba(255, 255, 255, 0.35) !important;
+}
+
+:deep(.custom-input .q-field__messages) {
+  color: #ff6b6b !important;
+  padding-left: 4px;
+  font-size: 0.78rem;
+}
+
+/* Force override any Quasar white background on input */
+:deep(.custom-input .q-field__control-container) {
+  background: transparent !important;
+}
+
+.input-icon {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 1.15rem;
+  margin-left: 6px;
+}
+
+.input-icon-right {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 1.15rem;
+  margin-right: 6px;
+}
+
+/* Autofill override */
 :deep(input:-webkit-autofill) {
   -webkit-background-clip: text;
   -webkit-text-fill-color: white;
   transition: background-color 5000s ease-in-out 0s;
 }
 
-/* Error message color for dark background */
-:deep(.glass-input.q-field--error .q-field__messages) {
-  color: #ff8a80 !important;
-  font-weight: 500;
+/* Forgot password */
+.forgot-row {
+  text-align: right;
+  margin-bottom: 24px;
+  margin-top: 2px;
 }
-:deep(.glass-input.q-field--error .q-icon) {
-  color: #ff8a80 !important;
+
+.forgot-link {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.82rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.forgot-link:hover {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: underline;
+}
+
+/* Masuk Button */
+.btn-wrapper {
+  width: 100%;
+}
+
+.masuk-btn {
+  background: linear-gradient(135deg, #e8001f 0%, #a00016 100%) !important;
+  color: #ffffff !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 2px !important;
+  border-radius: 14px !important;
+  height: 54px;
+  box-shadow: 0 8px 24px rgba(192, 21, 42, 0.45);
+  transition: all 0.25s ease;
+}
+
+.masuk-btn:hover {
+  background: linear-gradient(135deg, #ff1a35 0%, #c0001e 100%) !important;
+  box-shadow: 0 12px 32px rgba(192, 21, 42, 0.6);
+  transform: translateY(-1px);
+}
+
+.masuk-btn:active {
+  transform: translateY(0px) scale(0.98);
+  box-shadow: 0 4px 12px rgba(192, 21, 42, 0.4);
+}
+
+/* Footer */
+.footer-section {
+  margin-top: 32px;
+  text-align: center;
+}
+
+.footer-text {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.83rem;
+  margin: 0;
+}
+
+.footer-link {
+  color: #e8001f;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.footer-link:hover {
+  color: #ff3354;
+  text-decoration: underline;
 }
 </style>
